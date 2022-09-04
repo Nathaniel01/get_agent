@@ -20,6 +20,7 @@ router.param('search', async (search_string, ctx, next) => {
 	return next();
 
 })
+//Could use post securely transfer data to the backend
 	.get('/lrProperty/:search', async (ctx, next) => {
 		return ctx.body = { success: true, lrProperty: ctx.lrProperty };
 	})
