@@ -9,13 +9,26 @@ import Button from 'react-bootstrap/Button';
 
 function App() {
   const [propertyData, setPropertyData] = useState(null);
-  const [searchString, setSearchString] = useState()
+  const [searchString, setSearchString] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const resp = await fetch(`/lrProperty/${searchString}`);
-    const json = await resp.json();
-    if (json.success) setPropertyData(json.lrProperty);
+    try {
+      e.preventDefault()
+      const resp = await fetch(`/lrProperty/${searchString}`);
+      const json = await resp.json();
+      if (json.success){
+        setPropertyData(json.lrProperty);
+        setErrorMessage("")
+      }
+      else if (json.error){
+        setErrorMessage(json.msg)
+        setPropertyData(null)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
   }
 
   return (
@@ -27,17 +40,20 @@ function App() {
               <Form.Control placeholder="Search for property." onChange={(e) => setSearchString(e.target.value)} />
             </Col>
             <Col sm={2}>
-              <Button type="submit">Submit!</Button>
+              <Button type="submit">Search</Button>
             </Col>
           </Row>
         </Form>
       </Container>
       <br />
       <Container>
-        {propertyData && 
-        <strong>{propertyData.paon}, {propertyData.street}, {propertyData.outcode.toString() + " " + propertyData.incode.toString()} </strong>}
+        {  errorMessage && errorMessage.length > 0 && <strong>{errorMessage}</strong>}
       </Container>
-      <br />
+      <Container>
+        {propertyData &&
+          <strong>{propertyData.paon}, {propertyData.street}, {propertyData.outcode.toString() + " " + propertyData.incode.toString()} </strong>}
+      </Container>
+
       <Container>
         {propertyData &&
           <Table striped bordered hover>
@@ -53,7 +69,7 @@ function App() {
                 <tr key={tx.id}>
                   <td>{tx.id}</td>
                   <td>{tx.date}</td>
-                  <td>{tx.price}</td>
+                  <td>{tx.price.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
