@@ -1,4 +1,4 @@
-# Welcome to the GetAgent Fullstack Developer test!
+# Welcome to the Fullstack Developer test!
 
 The aim of this test is to get a sense of your experience, but without taking up much of your time!
 
